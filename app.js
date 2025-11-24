@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { FileText, Download, BookOpen } from 'lucide-react';
+const { useState } = React;
+const { FileText, Download, BookOpen } = lucide;
 
-export default function ETECoverGenerator() {
+function ETECoverGenerator() {
   const teachers = [
     { name: "Dr. Md. Kamal Hosain", designation: "Professor", status: "Active" },
     { name: "Dr. Md Munjure Mowla", designation: "Professor", status: "On Leave" },
@@ -42,13 +42,11 @@ export default function ETECoverGenerator() {
     submission_date: ''
   });
   
-  const [pdfGenerated, setPdfGenerated] = useState(true);
   const [savedStudents, setSavedStudents] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Auto-fill teacher designation when teacher name is selected
     if (name === 'teacher_name') {
       const selectedTeacher = teachers.find(t => t.name === value);
       setFormData({
@@ -67,7 +65,6 @@ export default function ETECoverGenerator() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Save student info for reuse
     const existingStudent = savedStudents.find(s => s.roll === formData.roll);
     if (!existingStudent && formData.roll && formData.student_name) {
       setSavedStudents([...savedStudents, {
@@ -125,7 +122,7 @@ export default function ETECoverGenerator() {
         
         <div className="flex justify-center mb-6">
           <div className="w-24 h-28 bg-gray-200 flex items-center justify-center border-2 border-gray-400">
-            <FileText size={48} className="text-gray-500" />
+            <i data-lucide="file-text" style={{width: '48px', height: '48px'}} className="text-gray-500"></i>
             <div className="absolute text-xs text-gray-600">RUET Logo</div>
           </div>
         </div>
@@ -204,268 +201,268 @@ export default function ETECoverGenerator() {
   };
 
   const downloadPDF = () => {
-    alert('In a full implementation with backend, this would generate and download a PDF using LaTeX/pdflatex. For now, you can use browser print (Ctrl+P) to save the preview as PDF.');
     window.print();
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-indigo-900 mb-2 flex items-center justify-center gap-3">
-            <BookOpen size={40} />
-            ETE Lab & Assignment Cover Generator
-          </h1>
-          <p className="text-gray-600">RUET - Department of Electronics & Telecommunication Engineering</p>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Form Section */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Cover Page Information</h2>
-            
-            {savedStudents.length > 0 && (
-              <div className="mb-4 p-3 bg-blue-50 rounded">
-                <p className="font-semibold mb-2 text-sm">Quick Load Student:</p>
-                <div className="flex flex-wrap gap-2">
-                  {savedStudents.map((student, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => loadStudentData(student)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-                    >
-                      {student.student_name} ({student.roll})
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Student Name *</label>
-                <input
-                  type="text"
-                  name="student_name"
-                  value={formData.student_name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Roll *</label>
-                  <input
-                    type="text"
-                    name="roll"
-                    value={formData.roll}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Session *</label>
-                  <input
-                    type="text"
-                    name="session"
-                    value={formData.session}
-                    onChange={handleChange}
-                    placeholder="e.g., 2021-22"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Teacher Name *</label>
-                <select
-                  name="teacher_name"
-                  value={formData.teacher_name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="">-- Select Teacher --</option>
-                  {teachers
-                    .filter(teacher => teacher.status === "Active")
-                    .map((teacher, idx) => (
-                      <option key={idx} value={teacher.name}>
-                        {teacher.name} ({teacher.designation})
-                      </option>
-                    ))}
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Teacher Designation *</label>
-                <input
-                  type="text"
-                  name="teacher_designation"
-                  value={formData.teacher_designation}
-                  onChange={handleChange}
-                  required
-                  readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Course Code *</label>
-                  <input
-                    type="text"
-                    name="course_code"
-                    value={formData.course_code}
-                    onChange={handleChange}
-                    placeholder="e.g., ETE 3101"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Report Type *</label>
-                  <select
-                    name="report_type"
-                    value={formData.report_type}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                    <option value="Lab Report">Lab Report</option>
-                    <option value="Assignment">Assignment</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Course Name *</label>
-                <input
-                  type="text"
-                  name="course_name"
-                  value={formData.course_name}
-                  onChange={handleChange}
-                  placeholder="e.g., Digital Electronics Lab"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    {getItemLabel()} No *
-                  </label>
-                  <input
-                    type="text"
-                    name="experiment_no"
-                    value={formData.experiment_no}
-                    onChange={handleChange}
-                    placeholder="e.g., 01"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    {getItemLabel()} Date *
-                  </label>
-                  <input
-                    type="date"
-                    name="experiment_date"
-                    value={formData.experiment_date}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  {getItemLabel()} Name *
-                </label>
-                <input
-                  type="text"
-                  name="experiment_name"
-                  value={formData.experiment_name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Submission Date *</label>
-                <input
-                  type="date"
-                  name="submission_date"
-                  value={formData.submission_date}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              
-              <button
-                onClick={handleSubmit}
-                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
-              >
-                <FileText size={20} />
-                Save Student Info
-              </button>
-            </div>
-          </div>
-          
-          {/* Preview Section */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-800">Live Preview</h2>
-              <button
-                onClick={downloadPDF}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition flex items-center gap-2"
-              >
-                <Download size={18} />
-                Download PDF
-              </button>
-            </div>
-            
-            <div className="border-2 border-gray-200 rounded-lg overflow-auto bg-gray-50" style={{ maxHeight: '800px' }}>
-              <div id="pdf-preview">
-                {generatePreview()}
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Note: This is a frontend demo. For full PDF generation with LaTeX, deploy the Python Flask backend provided in the project documentation.</p>
-        </div>
-      </div>
+  return React.createElement('div', { className: "min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6" },
+    React.createElement('div', { className: "max-w-7xl mx-auto" },
+      React.createElement('div', { className: "text-center mb-8" },
+        React.createElement('h1', { className: "text-4xl font-bold text-indigo-900 mb-2 flex items-center justify-center gap-3" },
+          React.createElement('i', { 'data-lucide': 'book-open', style: {width: '40px', height: '40px'} }),
+          'ETE Lab & Assignment Cover Generator'
+        ),
+        React.createElement('p', { className: "text-gray-600" }, 
+          'RUET - Department of Electronics & Telecommunication Engineering'
+        )
+      ),
       
-      <style jsx>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          #pdf-preview, #pdf-preview * {
-            visibility: visible;
-          }
-          #pdf-preview {
-            position: absolute;
-            left: 0;
-            top: 0;
-          }
+      React.createElement('div', { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
+        React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-6" },
+          React.createElement('h2', { className: "text-2xl font-bold text-gray-800 mb-4" }, 'Cover Page Information'),
+          
+          savedStudents.length > 0 && React.createElement('div', { className: "mb-4 p-3 bg-blue-50 rounded" },
+            React.createElement('p', { className: "font-semibold mb-2 text-sm" }, 'Quick Load Student:'),
+            React.createElement('div', { className: "flex flex-wrap gap-2" },
+              savedStudents.map((student, idx) =>
+                React.createElement('button', {
+                  key: idx,
+                  onClick: () => loadStudentData(student),
+                  className: "px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+                }, `${student.student_name} (${student.roll})`)
+              )
+            )
+          ),
+          
+          React.createElement('div', { className: "space-y-4" },
+            React.createElement('div', null,
+              React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Student Name *'),
+              React.createElement('input', {
+                type: "text",
+                name: "student_name",
+                value: formData.student_name,
+                onChange: handleChange,
+                required: true,
+                className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              })
+            ),
+            
+            React.createElement('div', { className: "grid grid-cols-2 gap-4" },
+              React.createElement('div', null,
+                React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Roll *'),
+                React.createElement('input', {
+                  type: "text",
+                  name: "roll",
+                  value: formData.roll,
+                  onChange: handleChange,
+                  required: true,
+                  className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                })
+              ),
+              React.createElement('div', null,
+                React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Session *'),
+                React.createElement('input', {
+                  type: "text",
+                  name: "session",
+                  value: formData.session,
+                  onChange: handleChange,
+                  placeholder: "e.g., 2021-22",
+                  required: true,
+                  className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                })
+              )
+            ),
+            
+            React.createElement('div', null,
+              React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Teacher Name *'),
+              React.createElement('select', {
+                name: "teacher_name",
+                value: formData.teacher_name,
+                onChange: handleChange,
+                required: true,
+                className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              },
+                React.createElement('option', { value: "" }, '-- Select Teacher --'),
+                teachers
+                  .filter(teacher => teacher.status === "Active")
+                  .map((teacher, idx) =>
+                    React.createElement('option', { key: idx, value: teacher.name },
+                      `${teacher.name} (${teacher.designation})`
+                    )
+                  )
+              )
+            ),
+            
+            React.createElement('div', null,
+              React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Teacher Designation *'),
+              React.createElement('input', {
+                type: "text",
+                name: "teacher_designation",
+                value: formData.teacher_designation,
+                onChange: handleChange,
+                required: true,
+                readOnly: true,
+                className: "w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              })
+            ),
+            
+            React.createElement('div', { className: "grid grid-cols-2 gap-4" },
+              React.createElement('div', null,
+                React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Course Code *'),
+                React.createElement('input', {
+                  type: "text",
+                  name: "course_code",
+                  value: formData.course_code,
+                  onChange: handleChange,
+                  placeholder: "e.g., ETE 3101",
+                  required: true,
+                  className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                })
+              ),
+              React.createElement('div', null,
+                React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Report Type *'),
+                React.createElement('select', {
+                  name: "report_type",
+                  value: formData.report_type,
+                  onChange: handleChange,
+                  className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                },
+                  React.createElement('option', { value: "Lab Report" }, 'Lab Report'),
+                  React.createElement('option', { value: "Assignment" }, 'Assignment')
+                )
+              )
+            ),
+            
+            React.createElement('div', null,
+              React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Course Name *'),
+              React.createElement('input', {
+                type: "text",
+                name: "course_name",
+                value: formData.course_name,
+                onChange: handleChange,
+                placeholder: "e.g., Digital Electronics Lab",
+                required: true,
+                className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              })
+            ),
+            
+            React.createElement('div', { className: "grid grid-cols-2 gap-4" },
+              React.createElement('div', null,
+                React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" },
+                  `${getItemLabel()} No *`
+                ),
+                React.createElement('input', {
+                  type: "text",
+                  name: "experiment_no",
+                  value: formData.experiment_no,
+                  onChange: handleChange,
+                  placeholder: "e.g., 01",
+                  required: true,
+                  className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                })
+              ),
+              React.createElement('div', null,
+                React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" },
+                  `${getItemLabel()} Date *`
+                ),
+                React.createElement('input', {
+                  type: "date",
+                  name: "experiment_date",
+                  value: formData.experiment_date,
+                  onChange: handleChange,
+                  required: true,
+                  className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                })
+              )
+            ),
+            
+            React.createElement('div', null,
+              React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" },
+                `${getItemLabel()} Name *`
+              ),
+              React.createElement('input', {
+                type: "text",
+                name: "experiment_name",
+                value: formData.experiment_name,
+                onChange: handleChange,
+                required: true,
+                className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              })
+            ),
+            
+            React.createElement('div', null,
+              React.createElement('label', { className: "block text-sm font-semibold text-gray-700 mb-1" }, 'Submission Date *'),
+              React.createElement('input', {
+                type: "date",
+                name: "submission_date",
+                value: formData.submission_date,
+                onChange: handleChange,
+                required: true,
+                className: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              })
+            ),
+            
+            React.createElement('button', {
+              onClick: handleSubmit,
+              className: "w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
+            },
+              React.createElement('i', { 'data-lucide': 'file-text', style: {width: '20px', height: '20px'} }),
+              'Save Student Info'
+            )
+          )
+        ),
+        
+        React.createElement('div', { className: "bg-white rounded-lg shadow-lg p-6" },
+          React.createElement('div', { className: "flex justify-between items-center mb-4" },
+            React.createElement('h2', { className: "text-2xl font-bold text-gray-800" }, 'Live Preview'),
+            React.createElement('button', {
+              onClick: downloadPDF,
+              className: "bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition flex items-center gap-2"
+            },
+              React.createElement('i', { 'data-lucide': 'download', style: {width: '18px', height: '18px'} }),
+              'Download PDF'
+            )
+          ),
+          
+          React.createElement('div', { 
+            className: "border-2 border-gray-200 rounded-lg overflow-auto bg-gray-50",
+            style: { maxHeight: '800px' }
+          },
+            React.createElement('div', { id: "pdf-preview" }, generatePreview())
+          )
+        )
+      ),
+      
+      React.createElement('div', { className: "mt-6 text-center text-sm text-gray-600" },
+        React.createElement('p', null, 'Note: Use Ctrl+P or Cmd+P to print/save as PDF')
+      )
+    ),
+    
+    React.createElement('style', null, `
+      @media print {
+        body * {
+          visibility: hidden;
         }
-        @page {
-          size: A4;
-          margin: 0;
+        #pdf-preview, #pdf-preview * {
+          visibility: visible;
         }
-      `}</style>
-    </div>
+        #pdf-preview {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+      }
+      @page {
+        size: A4;
+        margin: 0;
+      }
+    `)
   );
 }
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<ETECoverGenerator />);
+root.render(React.createElement(ETECoverGenerator));
+
+// Initialize Lucide icons
+if (typeof lucide !== 'undefined') {
+  lucide.createIcons();
+}
