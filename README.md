@@ -10,7 +10,7 @@ Web application for generating cover pages for lab reports and assignments for t
 - Support for both Lab Reports and Assignments
 
 ## Live Demo
-[View Live App](https://yourusername.github.io/ete-cover-generator)
+[View Live App](https://mahbuburrahmantabib.github.io/ete-cover-generator/)
 
 ## Usage
 1. Fill in student information
