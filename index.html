@@ -108,8 +108,8 @@
                         </button>
                     </div>
                     
-                    <div class="border-2 border-gray-200 rounded-lg overflow-auto bg-gray-50" style="max-height: 800px;">
-                        <div id="pdf-preview"></div>
+                    <div class="border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50" style="height: 750px; display: flex; align-items: center; justify-content: center;">
+                        <div id="pdf-preview" style="transform-origin: top center;"></div>
                     </div>
                 </div>
             </div>
@@ -294,7 +294,7 @@
             const sectionSpacing = isAssignment ? '3rem' : '1.5rem';
 
             document.getElementById('pdf-preview').innerHTML = `
-                <div style="font-family: 'Times New Roman', serif; width: 210mm; min-height: 297mm; padding: ${topMargin} 19mm 20mm 19mm; box-sizing: border-box; margin: 0 auto; background: white;">
+                <div style="font-family: 'Times New Roman', serif; width: 210mm; height: 297mm; padding: ${topMargin} 19mm 20mm 19mm; box-sizing: border-box; margin: 0 auto; background: white;">
                     <div style="text-align: center; margin-bottom: ${isAssignment ? '2rem' : '1rem'};">
                         <p style="font-style: italic; font-size: 0.875rem;">Heaven's Light is Our Guide</p>
                     </div>
@@ -380,8 +380,26 @@
                     ` : ''}
                 </div>
             `;
+            
+            // Scale preview to fit container
+            setTimeout(scalePreview, 100);
         }
 
+        function scalePreview() {
+            const preview = document.getElementById('pdf-preview');
+            const container = preview?.parentElement;
+            
+            if (preview && container) {
+                const containerHeight = container.clientHeight;
+                const previewHeight = 297 * 3.7795; // A4 297mm to pixels
+                const scale = Math.min((containerHeight - 40) / previewHeight, 1); // Don't scale up beyond 100%
+                
+                preview.style.transform = `scale(${scale})`;
+                preview.style.transformOrigin = 'top center';
+            }
+        }
+
+        window.addEventListener('resize', scalePreview);
         window.onload = init;
     </script>
 </body>
