@@ -9,9 +9,21 @@
         @media print {
             body * { visibility: hidden; }
             #pdf-preview, #pdf-preview * { visibility: visible; }
-            #pdf-preview { position: absolute; left: 0; top: 0; }
+            #pdf-preview { 
+                position: absolute; 
+                left: 0; 
+                top: 0;
+                transform: none !important;
+            }
         }
         @page { size: A4; margin: 0; }
+        
+        #preview-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -108,8 +120,8 @@
                         </button>
                     </div>
                     
-                    <div class="border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50" style="height: 750px; display: flex; align-items: center; justify-content: center;">
-                        <div id="pdf-preview" style="transform-origin: top center;"></div>
+                    <div id="preview-container" class="border-2 border-gray-200 rounded-lg bg-gray-50" style="height: 750px;">
+                        <div id="pdf-preview"></div>
                     </div>
                 </div>
             </div>
@@ -294,7 +306,7 @@
             const sectionSpacing = isAssignment ? '3rem' : '1.5rem';
 
             document.getElementById('pdf-preview').innerHTML = `
-                <div style="font-family: 'Times New Roman', serif; width: 210mm; height: 297mm; padding: ${topMargin} 19mm 20mm 19mm; box-sizing: border-box; margin: 0 auto; background: white;">
+                <div style="font-family: 'Times New Roman', serif; width: 210mm; height: 297mm; padding: ${topMargin} 19mm 20mm 19mm; box-sizing: border-box; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     <div style="text-align: center; margin-bottom: ${isAssignment ? '2rem' : '1rem'};">
                         <p style="font-style: italic; font-size: 0.875rem;">Heaven's Light is Our Guide</p>
                     </div>
@@ -387,15 +399,21 @@
 
         function scalePreview() {
             const preview = document.getElementById('pdf-preview');
-            const container = preview?.parentElement;
+            const container = document.getElementById('preview-container');
             
-            if (preview && container) {
-                const containerHeight = container.clientHeight;
-                const previewHeight = 297 * 3.7795; // A4 297mm to pixels
-                const scale = Math.min((containerHeight - 40) / previewHeight, 1); // Don't scale up beyond 100%
+            if (preview && container && preview.firstElementChild) {
+                const containerWidth = container.clientWidth - 40; // padding
+                const containerHeight = container.clientHeight - 40; // padding
+                const pageWidth = 210 * 3.7795; // 210mm to pixels
+                const pageHeight = 297 * 3.7795; // 297mm to pixels
+                
+                // Calculate scale to fit both width and height
+                const scaleX = containerWidth / pageWidth;
+                const scaleY = containerHeight / pageHeight;
+                const scale = Math.min(scaleX, scaleY, 1); // Don't scale up
                 
                 preview.style.transform = `scale(${scale})`;
-                preview.style.transformOrigin = 'top center';
+                preview.style.transformOrigin = 'center center';
             }
         }
 
