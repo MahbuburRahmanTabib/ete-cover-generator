@@ -27,23 +27,22 @@
                 <div class="bg-white rounded-lg shadow-lg p-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">Cover Page Information</h2>
                     
-                    <div id="savedStudents" class="mb-4"></div>
-                    
                     <div class="space-y-4">
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Select Your Roll *</label>
+                            <select id="roll" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Select Roll Number --</option>
+                            </select>
+                        </div>
+
+                        <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Student Name *</label>
-                            <input type="text" id="student_name" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <input type="text" id="student_name" readonly class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100">
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-1">Roll *</label>
-                                <input type="text" id="roll" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-1">Session *</label>
-                                <input type="text" id="session" placeholder="e.g., 2021-22" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Session *</label>
+                            <input type="text" id="session" placeholder="e.g., 2023-24" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
                         
                         <div>
@@ -97,10 +96,6 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Date *</label>
                             <input type="date" id="submission_date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
-                        
-                        <button onclick="saveStudent()" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
-                            💾 Save Student Info
-                        </button>
                     </div>
                 </div>
                 
@@ -126,6 +121,69 @@
     </div>
 
     <script>
+        const students = [
+            { "roll": "2304001", "name": "Alif Imtiaj" },
+            { "roll": "2304002", "name": "Al Mahian Madhurjo" },
+            { "roll": "2304003", "name": "Md Azmayeen Fayekh" },
+            { "roll": "2304004", "name": "Md. Tahsin Ahmed Mugdha" },
+            { "roll": "2304005", "name": "Fayem Muktadir Rahman" },
+            { "roll": "2304006", "name": "A.H.M. Rafid Zaman" },
+            { "roll": "2304007", "name": "Md Adnan Arafat Ovi" },
+            { "roll": "2304008", "name": "Mifta-Hul-Jannat" },
+            { "roll": "2304009", "name": "Md Mahim Al Mashrafee" },
+            { "roll": "2304010", "name": "Md Afnan Abedin" },
+            { "roll": "2304011", "name": "Topon Kumar Roy" },
+            { "roll": "2304012", "name": "Md. Mahbubur Rahman" },
+            { "roll": "2304013", "name": "Maimuna Farzana Dyuti" },
+            { "roll": "2304014", "name": "Mst. Taposhi Rabeya" },
+            { "roll": "2304015", "name": "Md. Safayet Muntasir Nahin" },
+            { "roll": "2304016", "name": "Redwan Bin Gofran" },
+            { "roll": "2304017", "name": "Md Jahid Hasan" },
+            { "roll": "2304018", "name": "Humyra Tasnim" },
+            { "roll": "2304019", "name": "Essam Sami" },
+            { "roll": "2304020", "name": "Raduan Azim Rahik" },
+            { "roll": "2304021", "name": "Adiba Minnat" },
+            { "roll": "2304022", "name": "Sheikh Rafat Ahmed Hamim" },
+            { "roll": "2304023", "name": "Raju Mitra" },
+            { "roll": "2304024", "name": "Ragib Yeasir" },
+            { "roll": "2304025", "name": "Md Abdul Aziz" },
+            { "roll": "2304026", "name": "Shamsa Kalam Risha" },
+            { "roll": "2304027", "name": "Kawsar Ahmed" },
+            { "roll": "2304028", "name": "Shuvo Biswas" },
+            { "roll": "2304029", "name": "Khandaker Rafiul Islam" },
+            { "roll": "2304030", "name": "Mahia Arvi" },
+            { "roll": "2304031", "name": "Md. Sabith Rahman" },
+            { "roll": "2304032", "name": "Nusrat Jahan Elma" },
+            { "roll": "2304033", "name": "Mst. Arnika Tabassum" },
+            { "roll": "2304034", "name": "Nafisha Fauzia" },
+            { "roll": "2304035", "name": "Md Sarwar" },
+            { "roll": "2304036", "name": "Md. Tanvir Hasan Mursalin" },
+            { "roll": "2304037", "name": "Kalyani Roy Bandhan" },
+            { "roll": "2304038", "name": "Mayukh Pramanik" },
+            { "roll": "2304039", "name": "Md. Shahrear Hossain" },
+            { "roll": "2304040", "name": "Jakia Fardous" },
+            { "roll": "2304041", "name": "Md. Sharear Islam Pranto" },
+            { "roll": "2304042", "name": "Adri Shikhor Saha" },
+            { "roll": "2304043", "name": "Shejuti Mehejabin" },
+            { "roll": "2304044", "name": "Redowan Haque" },
+            { "roll": "2304045", "name": "Sreeja Ghosh" },
+            { "roll": "2304046", "name": "Maruf Mazbah" },
+            { "roll": "2304047", "name": "Md. Faisal Sikder" },
+            { "roll": "2304048", "name": "Md. Alamin" },
+            { "roll": "2304049", "name": "S.M. Muhtasim Abrar Zaman" },
+            { "roll": "2304050", "name": "Saifullah Al Usama" },
+            { "roll": "2304051", "name": "Mohammad Mihsan Bin Maksud" },
+            { "roll": "2304052", "name": "Md. Mehedi Hasan" },
+            { "roll": "2304053", "name": "Md Saifur Rahman Khan Jewel" },
+            { "roll": "2304054", "name": "Tabassum Islam Bushra" },
+            { "roll": "2304055", "name": "Aronyo Turjo" },
+            { "roll": "2304056", "name": "Md. Mostafizur Rahman" },
+            { "roll": "2304057", "name": "Rihab Liman Liman" },
+            { "roll": "2304058", "name": "Tanjila Tasnim Shuva" },
+            { "roll": "2304059", "name": "SM Walid Gibsan" },
+            { "roll": "2304060", "name": "Most. Farhana Ferdous" }
+        ];
+
         const teachers = [
             { name: "Dr. Md. Kamal Hosain", designation: "Professor", status: "Active" },
             { name: "Dr. Mst. Fateha Samad", designation: "Professor", status: "Active" },
@@ -140,10 +198,16 @@
             { name: "Rifa Tabassum Mim", designation: "Lecturer", status: "Active" }
         ];
 
-        let savedStudents = [];
-
-        // Initialize
         function init() {
+            // Populate student roll dropdown
+            const rollSelect = document.getElementById('roll');
+            students.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.roll;
+                option.textContent = `${student.roll} - ${student.name}`;
+                rollSelect.appendChild(option);
+            });
+
             // Populate teacher dropdown
             const teacherSelect = document.getElementById('teacher_name');
             teachers.forEach(teacher => {
@@ -154,11 +218,11 @@
             });
 
             // Add event listeners
+            document.getElementById('roll').addEventListener('change', updateStudentName);
             document.getElementById('teacher_name').addEventListener('change', updateTeacherDesignation);
             document.getElementById('report_type').addEventListener('change', updateLabels);
             
-            // Add live preview listeners
-            const inputs = ['student_name', 'roll', 'session', 'teacher_name', 'teacher_designation', 
+            const inputs = ['roll', 'student_name', 'session', 'teacher_name', 'teacher_designation', 
                            'course_code', 'course_name', 'report_type', 'experiment_no', 
                            'experiment_name', 'experiment_date', 'submission_date'];
             inputs.forEach(id => {
@@ -166,6 +230,13 @@
                 document.getElementById(id).addEventListener('change', updatePreview);
             });
 
+            updatePreview();
+        }
+
+        function updateStudentName() {
+            const selectedRoll = document.getElementById('roll').value;
+            const student = students.find(s => s.roll === selectedRoll);
+            document.getElementById('student_name').value = student ? student.name : '';
             updatePreview();
         }
 
@@ -210,44 +281,47 @@
             };
 
             const itemLabel = data.report_type === 'Assignment' ? 'Assignment' : 'Experiment';
+            const isAssignment = data.report_type === 'Assignment';
+
+            const topMargin = isAssignment ? '30mm' : '20mm';
+            const logoMargin = isAssignment ? '3rem' : '1.5rem';
+            const sectionSpacing = isAssignment ? '3rem' : '1.5rem';
 
             document.getElementById('pdf-preview').innerHTML = `
-                <div style="font-family: 'Times New Roman', serif; width: 210mm; min-height: 297mm; padding: 20mm 19mm; box-sizing: border-box; margin: 0 auto; background: white;">
-                    <div style="text-align: center; margin-bottom: 1rem;">
+                <div style="font-family: 'Times New Roman', serif; width: 210mm; min-height: 297mm; padding: ${topMargin} 19mm 20mm 19mm; box-sizing: border-box; margin: 0 auto; background: white;">
+                    <div style="text-align: center; margin-bottom: ${isAssignment ? '2rem' : '1rem'};">
                         <p style="font-style: italic; font-size: 0.875rem;">Heaven's Light is Our Guide</p>
                     </div>
                     
-                    <div style="text-align: center; margin-bottom: 1rem;">
+                    <div style="text-align: center; margin-bottom: ${isAssignment ? '2rem' : '1rem'};">
                         <h1 style="font-size: 1.5rem; font-weight: bold;">Rajshahi University of Engineering & Technology</h1>
                     </div>
                     
-                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div style="text-align: center; margin-bottom: ${logoMargin};">
                         <h2 style="font-size: 1.25rem; font-weight: bold;">Department of Electronics & Telecommunication Engineering</h2>
                     </div>
                     
-                    <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
-                        <div style="width: 96px; height: 112px; background: #e5e7eb; display: flex; align-items: center; justify-content: center; border: 2px solid #9ca3af; position: relative;">
-                            <span style="font-size: 0.75rem; color: #6b7280;">RUET Logo</span>
-                        </div>
+                    <div style="display: flex; justify-content: center; margin-bottom: ${logoMargin};">
+                        <img src="https://www.ruet.ac.bd/public/front/images/logo.png" alt="RUET Logo" style="width: 100px; height: auto;">
                     </div>
                     
-                    <div style="text-align: center; margin-bottom: 1rem;">
+                    <div style="text-align: center; margin-bottom: ${isAssignment ? '2rem' : '1rem'};">
                         <h2 style="font-size: 1.5rem; font-weight: bold;">${data.course_code}: ${data.course_name}</h2>
                     </div>
                     
-                    <div style="border-top: 2px solid black; margin-bottom: 1rem;"></div>
+                    <div style="border-top: 2px solid black; margin-bottom: ${isAssignment ? '2rem' : '1rem'};"></div>
                     
-                    <div style="text-align: center; margin-bottom: 1rem;">
+                    <div style="text-align: center; margin-bottom: ${isAssignment ? '2rem' : '1rem'};">
                         <h2 style="font-size: 1.5rem; font-weight: bold;">${data.report_type} No. ${data.experiment_no}</h2>
                     </div>
                     
-                    <div style="text-align: center; margin-bottom: 0.5rem;">
+                    <div style="text-align: center; margin-bottom: ${isAssignment ? '1.5rem' : '0.5rem'};">
                         <h3 style="font-size: 1.25rem; font-weight: bold;">${itemLabel} Name: ${data.experiment_name}</h3>
                     </div>
                     
-                    <div style="border-top: 2px solid black; margin-bottom: 1.5rem;"></div>
+                    <div style="border-top: 2px solid black; margin-bottom: ${sectionSpacing};"></div>
                     
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; padding: 0 3rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: ${sectionSpacing}; padding: 0 3rem;">
                         <div>
                             <p style="font-size: 1.125rem; font-weight: bold; font-style: italic; margin-bottom: 0.5rem;">Submitted by:</p>
                             <p>${data.student_name}</p>
@@ -262,11 +336,12 @@
                         </div>
                     </div>
                     
-                    <div style="text-align: center; margin-bottom: 1.5rem;">
-                        <p style="font-size: 1.125rem; font-weight: bold;">Date of Experiment: ${formatDate(data.experiment_date)}</p>
+                    <div style="text-align: center; margin-bottom: ${isAssignment ? '4rem' : '1.5rem'};">
+                        <p style="font-size: 1.125rem; font-weight: bold;">Date of ${itemLabel}: ${formatDate(data.experiment_date)}</p>
                         <p style="font-size: 1.125rem; font-weight: bold;">Date of Submission: ${formatDate(data.submission_date)}</p>
                     </div>
                     
+                    ${!isAssignment ? `
                     <div style="border-top: 1px solid black; margin-bottom: 1rem;"></div>
                     
                     <div style="text-align: center; margin-bottom: 1rem;">
@@ -296,54 +371,11 @@
                         <p style="margin-bottom: 0.5rem;">——————</p>
                         <p>Signature</p>
                     </div>
+                    ` : ''}
                 </div>
             `;
         }
 
-        function saveStudent() {
-            const student = {
-                student_name: document.getElementById('student_name').value,
-                roll: document.getElementById('roll').value,
-                session: document.getElementById('session').value
-            };
-
-            if (student.student_name && student.roll) {
-                const exists = savedStudents.find(s => s.roll === student.roll);
-                if (!exists) {
-                    savedStudents.push(student);
-                    displaySavedStudents();
-                    alert('✅ Student info saved!');
-                }
-            }
-        }
-
-        function displaySavedStudents() {
-            const container = document.getElementById('savedStudents');
-            if (savedStudents.length > 0) {
-                container.innerHTML = `
-                    <div class="p-3 bg-blue-50 rounded">
-                        <p class="font-semibold mb-2 text-sm">Quick Load Student:</p>
-                        <div class="flex flex-wrap gap-2">
-                            ${savedStudents.map((s, i) => `
-                                <button onclick="loadStudent(${i})" class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
-                                    ${s.student_name} (${s.roll})
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function loadStudent(index) {
-            const student = savedStudents[index];
-            document.getElementById('student_name').value = student.student_name;
-            document.getElementById('roll').value = student.roll;
-            document.getElementById('session').value = student.session;
-            updatePreview();
-        }
-
-        // Initialize on page load
         window.onload = init;
     </script>
 </body>
