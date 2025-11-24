@@ -4,13 +4,347 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ETE Lab Cover Generator - RUET</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #pdf-preview, #pdf-preview * { visibility: visible; }
+            #pdf-preview { position: absolute; left: 0; top: 0; }
+        }
+        @page { size: A4; margin: 0; }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script src="app.js"></script>
+    <div id="app" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-indigo-900 mb-2">📚 ETE Lab & Assignment Cover Generator</h1>
+                <p class="text-gray-600">RUET - Department of Electronics & Telecommunication Engineering</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Form Section -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Cover Page Information</h2>
+                    
+                    <div id="savedStudents" class="mb-4"></div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Student Name *</label>
+                            <input type="text" id="student_name" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Roll *</label>
+                                <input type="text" id="roll" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Session *</label>
+                                <input type="text" id="session" placeholder="e.g., 2021-22" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Teacher Name *</label>
+                            <select id="teacher_name" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Select Teacher --</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Teacher Designation *</label>
+                            <input type="text" id="teacher_designation" readonly class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Course Code *</label>
+                                <input type="text" id="course_code" placeholder="e.g., ETE 3101" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Report Type *</label>
+                                <select id="report_type" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Lab Report">Lab Report</option>
+                                    <option value="Assignment">Assignment</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Course Name *</label>
+                            <input type="text" id="course_name" placeholder="e.g., Digital Electronics Lab" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1" id="exp_no_label">Experiment No *</label>
+                                <input type="text" id="experiment_no" placeholder="e.g., 01" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1" id="exp_date_label">Experiment Date *</label>
+                                <input type="date" id="experiment_date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1" id="exp_name_label">Experiment Name *</label>
+                            <input type="text" id="experiment_name" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Submission Date *</label>
+                            <input type="date" id="submission_date" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                        <button onclick="saveStudent()" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                            💾 Save Student Info
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Preview Section -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800">Live Preview</h2>
+                        <button onclick="window.print()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
+                            📥 Download PDF
+                        </button>
+                    </div>
+                    
+                    <div class="border-2 border-gray-200 rounded-lg overflow-auto bg-gray-50" style="max-height: 800px;">
+                        <div id="pdf-preview"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Use Ctrl+P or Cmd+P to print/save as PDF</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const teachers = [
+            { name: "Dr. Md. Kamal Hosain", designation: "Professor", status: "Active" },
+            { name: "Dr. Mst. Fateha Samad", designation: "Professor", status: "Active" },
+            { name: "Md Rabiul Hasan", designation: "Associate Professor", status: "Active" },
+            { name: "Md. Aslam Mollah", designation: "Assistant Professor", status: "Active" },
+            { name: "Md. Rakib Hossain", designation: "Assistant Professor", status: "Active" },
+            { name: "Farzana Akter", designation: "Assistant Professor", status: "Active" },
+            { name: "Md Abu Ismail Siddique", designation: "Assistant Professor", status: "Active" },
+            { name: "Sharaf Tasnim", designation: "Assistant Professor", status: "Active" },
+            { name: "Mohammed Nazmul Islam Nahin", designation: "Lecturer", status: "Active" },
+            { name: "Rubaeat Ahammed", designation: "Lecturer", status: "Active" },
+            { name: "Rifa Tabassum Mim", designation: "Lecturer", status: "Active" }
+        ];
+
+        let savedStudents = [];
+
+        // Initialize
+        function init() {
+            // Populate teacher dropdown
+            const teacherSelect = document.getElementById('teacher_name');
+            teachers.forEach(teacher => {
+                const option = document.createElement('option');
+                option.value = teacher.name;
+                option.textContent = `${teacher.name} (${teacher.designation})`;
+                teacherSelect.appendChild(option);
+            });
+
+            // Add event listeners
+            document.getElementById('teacher_name').addEventListener('change', updateTeacherDesignation);
+            document.getElementById('report_type').addEventListener('change', updateLabels);
+            
+            // Add live preview listeners
+            const inputs = ['student_name', 'roll', 'session', 'teacher_name', 'teacher_designation', 
+                           'course_code', 'course_name', 'report_type', 'experiment_no', 
+                           'experiment_name', 'experiment_date', 'submission_date'];
+            inputs.forEach(id => {
+                document.getElementById(id).addEventListener('input', updatePreview);
+                document.getElementById(id).addEventListener('change', updatePreview);
+            });
+
+            updatePreview();
+        }
+
+        function updateTeacherDesignation() {
+            const selectedName = document.getElementById('teacher_name').value;
+            const teacher = teachers.find(t => t.name === selectedName);
+            document.getElementById('teacher_designation').value = teacher ? teacher.designation : '';
+            updatePreview();
+        }
+
+        function updateLabels() {
+            const reportType = document.getElementById('report_type').value;
+            const label = reportType === 'Assignment' ? 'Assignment' : 'Experiment';
+            document.getElementById('exp_no_label').textContent = `${label} No *`;
+            document.getElementById('exp_date_label').textContent = `${label} Date *`;
+            document.getElementById('exp_name_label').textContent = `${label} Name *`;
+            updatePreview();
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            return `${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}`;
+        }
+
+        function updatePreview() {
+            const data = {
+                student_name: document.getElementById('student_name').value,
+                roll: document.getElementById('roll').value,
+                session: document.getElementById('session').value,
+                teacher_name: document.getElementById('teacher_name').value,
+                teacher_designation: document.getElementById('teacher_designation').value,
+                course_code: document.getElementById('course_code').value,
+                course_name: document.getElementById('course_name').value,
+                report_type: document.getElementById('report_type').value,
+                experiment_no: document.getElementById('experiment_no').value,
+                experiment_name: document.getElementById('experiment_name').value,
+                experiment_date: document.getElementById('experiment_date').value,
+                submission_date: document.getElementById('submission_date').value
+            };
+
+            const itemLabel = data.report_type === 'Assignment' ? 'Assignment' : 'Experiment';
+
+            document.getElementById('pdf-preview').innerHTML = `
+                <div style="font-family: 'Times New Roman', serif; width: 210mm; min-height: 297mm; padding: 20mm 19mm; box-sizing: border-box; margin: 0 auto; background: white;">
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <p style="font-style: italic; font-size: 0.875rem;">Heaven's Light is Our Guide</p>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <h1 style="font-size: 1.5rem; font-weight: bold;">Rajshahi University of Engineering & Technology</h1>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <h2 style="font-size: 1.25rem; font-weight: bold;">Department of Electronics & Telecommunication Engineering</h2>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+                        <div style="width: 96px; height: 112px; background: #e5e7eb; display: flex; align-items: center; justify-content: center; border: 2px solid #9ca3af; position: relative;">
+                            <span style="font-size: 0.75rem; color: #6b7280;">RUET Logo</span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <h2 style="font-size: 1.5rem; font-weight: bold;">${data.course_code}: ${data.course_name}</h2>
+                    </div>
+                    
+                    <div style="border-top: 2px solid black; margin-bottom: 1rem;"></div>
+                    
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <h2 style="font-size: 1.5rem; font-weight: bold;">${data.report_type} No. ${data.experiment_no}</h2>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 0.5rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: bold;">${itemLabel} Name: ${data.experiment_name}</h3>
+                    </div>
+                    
+                    <div style="border-top: 2px solid black; margin-bottom: 1.5rem;"></div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; padding: 0 3rem;">
+                        <div>
+                            <p style="font-size: 1.125rem; font-weight: bold; font-style: italic; margin-bottom: 0.5rem;">Submitted by:</p>
+                            <p>${data.student_name}</p>
+                            <p>Roll: ${data.roll}</p>
+                            <p>Session: ${data.session}</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 1.125rem; font-weight: bold; font-style: italic; margin-bottom: 0.5rem;">Submitted to:</p>
+                            <p>${data.teacher_name}</p>
+                            <p>${data.teacher_designation}</p>
+                            <p>Dept. of ETE, RUET</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <p style="font-size: 1.125rem; font-weight: bold;">Date of Experiment: ${formatDate(data.experiment_date)}</p>
+                        <p style="font-size: 1.125rem; font-weight: bold;">Date of Submission: ${formatDate(data.submission_date)}</p>
+                    </div>
+                    
+                    <div style="border-top: 1px solid black; margin-bottom: 1rem;"></div>
+                    
+                    <div style="text-align: center; margin-bottom: 1rem;">
+                        <p style="font-size: 1.125rem; font-weight: bold;">(Teacher's Section)</p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-around; padding: 0 3rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0.5rem;">Report</p>
+                            <p>☐ Excellent</p>
+                            <p>☐ Very Good</p>
+                            <p>☐ Good</p>
+                            <p>☐ Average</p>
+                            <p>☐ Poor</p>
+                        </div>
+                        <div>
+                            <p style="font-weight: bold; text-decoration: underline; margin-bottom: 0.5rem;">Viva</p>
+                            <p>☐ Excellent</p>
+                            <p>☐ Very Good</p>
+                            <p>☐ Good</p>
+                            <p>☐ Average</p>
+                            <p>☐ Poor</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <p style="margin-bottom: 0.5rem;">——————</p>
+                        <p>Signature</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveStudent() {
+            const student = {
+                student_name: document.getElementById('student_name').value,
+                roll: document.getElementById('roll').value,
+                session: document.getElementById('session').value
+            };
+
+            if (student.student_name && student.roll) {
+                const exists = savedStudents.find(s => s.roll === student.roll);
+                if (!exists) {
+                    savedStudents.push(student);
+                    displaySavedStudents();
+                    alert('✅ Student info saved!');
+                }
+            }
+        }
+
+        function displaySavedStudents() {
+            const container = document.getElementById('savedStudents');
+            if (savedStudents.length > 0) {
+                container.innerHTML = `
+                    <div class="p-3 bg-blue-50 rounded">
+                        <p class="font-semibold mb-2 text-sm">Quick Load Student:</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${savedStudents.map((s, i) => `
+                                <button onclick="loadStudent(${i})" class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
+                                    ${s.student_name} (${s.roll})
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function loadStudent(index) {
+            const student = savedStudents[index];
+            document.getElementById('student_name').value = student.student_name;
+            document.getElementById('roll').value = student.roll;
+            document.getElementById('session').value = student.session;
+            updatePreview();
+        }
+
+        // Initialize on page load
+        window.onload = init;
+    </script>
 </body>
 </html>
